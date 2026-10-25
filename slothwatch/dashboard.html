@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SlothWatch</title>
+<style>
+:root{--bg:#fafaf7;--fg:#1d2420;--mut:#66706a;--card:#fff;--line:#e2e5df;--ok:#2e7d4f;--warn:#b7791f;--bad:#c0392b;--acc:#3d6b4f}
+@media (prefers-color-scheme:dark){:root{--bg:#141815;--fg:#e8ece9;--mut:#9aa59e;--card:#1c221e;--line:#2c352f;--ok:#5fc08a;--warn:#e0b04f;--bad:#ee7466;--acc:#7fbf99}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.5 system-ui,-apple-system,Segoe UI,sans-serif}
+header{display:flex;align-items:center;gap:14px;padding:14px 22px;border-bottom:1px solid var(--line)}
+header h1{font-size:18px;margin:0}header .tag{color:var(--mut);font-size:13px}
+nav{display:flex;gap:4px;padding:8px 22px;border-bottom:1px solid var(--line);overflow-x:auto}
+nav button{background:none;border:0;color:var(--mut);padding:8px 12px;border-radius:8px;cursor:pointer;font:inherit;white-space:nowrap}
+nav button.on{background:var(--card);color:var(--fg);box-shadow:0 0 0 1px var(--line)}
+main{max-width:980px;margin:0 auto;padding:22px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin-bottom:14px}
+.big{font-size:34px;font-weight:650;letter-spacing:-.5px}.mut{color:var(--mut)}.ok{color:var(--ok)}.bad{color:var(--bad)}.warn{color:var(--warn)}
+table{width:100%;border-collapse:collapse;font-size:14px}th,td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--line)}th{color:var(--mut);font-weight:500}
+button.act{border:1px solid var(--line);background:var(--card);color:var(--fg);padding:5px 10px;border-radius:7px;cursor:pointer;margin-right:4px;font:inherit}
+button.act.p{background:var(--acc);color:#fff;border-color:var(--acc)}
+.bar{height:18px;border-radius:5px;background:var(--acc);margin:3px 0}.row{display:flex;align-items:center;gap:10px}.row .l{width:190px;color:var(--mut);font-size:13px}
+.eyes .lid{transition:all .4s}.sleep .pupil{opacity:0}.awake .lid{opacity:0}
+code{background:var(--line);padding:1px 5px;border-radius:4px}svg text{fill:var(--mut);font-size:11px}
+.pill{display:inline-block;padding:1px 8px;border-radius:99px;font-size:12px;border:1px solid var(--line)}
+</style></head><body>
+<header>
+ <svg id="sloth" width="64" height="48" viewBox="0 0 64 48" class="sleep" aria-label="sloth mascot">
+  <ellipse cx="32" cy="26" rx="26" ry="19" fill="#8b6f4e"/><ellipse cx="32" cy="27" rx="19" ry="13" fill="#d9c7a3"/>
+  <g class="eyes"><ellipse cx="23" cy="25" rx="5" ry="4" fill="#3b2e22"/><ellipse cx="41" cy="25" rx="5" ry="4" fill="#3b2e22"/>
+   <circle class="pupil" cx="23" cy="25" r="1.8" fill="#fff"/><circle class="pupil" cx="41" cy="25" r="1.8" fill="#fff"/>
+   <path class="lid" d="M17 25 Q23 28 29 25 M35 25 Q41 28 47 25" stroke="#d9c7a3" stroke-width="4" fill="none"/></g>
+  <ellipse cx="32" cy="32" rx="3" ry="2" fill="#3b2e22"/><path d="M28 35 Q32 38 36 35" stroke="#3b2e22" fill="none" stroke-width="1.5"/>
+ </svg>
+ <div><h1>SlothWatch <span id="demoTag" class="pill" style="display:none">DEMO · synthetic data</span></h1><div class="tag">The best output is silence. Everything on this page stays on your machine.</div></div>
+</header>
+<nav id="nav"></nav><main id="main"></main>
+<script>
+const tabs=["Today","Ladder","Recurring","Alerts","Score","Receipts","Benchmark","Settings"];let cur="Today";
+const $=s=>document.querySelector(s),api=p=>fetch(p).then(r=>r.json()),post=(p,b)=>fetch(p,{method:"POST",body:JSON.stringify(b)}).then(r=>r.json());
+const esc=s=>String(s??"").replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
+const money=x=>x==null?"–":Number(x).toFixed(2);
+function nav(){$("#nav").innerHTML=tabs.map(t=>`<button class="${t==cur?"on":""}" onclick="go('${t}')">${t}</button>`).join("")}
+async function go(t){cur=t;nav();$("#main").innerHTML="<div class=mut>loading…</div>";$("#main").innerHTML=await views[t]()}
+function line(vals,w=560,h=140,col="var(--acc)"){if(vals.length<2)return"";const mx=Math.max(...vals,1),mn=Math.min(...vals,0),sx=(w-20)/(vals.length-1);
+ const pts=vals.map((v,i)=>`${10+i*sx},${h-14-(v-mn)/(mx-mn||1)*(h-28)}`).join(" ");return `<svg viewBox="0 0 ${w} ${h}" width="100%"><polyline fill="none" stroke="${col}" stroke-width="2.4" points="${pts}"/></svg>`}
+function band(s,lo,hi,w=300,h=70){const all=[...s,lo,hi],mx=Math.max(...all),mn=Math.min(...all),sx=(w-20)/Math.max(s.length,1),y=v=>h-8-(v-mn)/(mx-mn||1)*(h-16);
+ const pts=s.map((v,i)=>`${10+i*sx},${y(v)}`).join(" ");return `<svg viewBox="0 0 ${w} ${h}" width="100%"><rect x="${10+s.length*sx-6}" y="${y(hi)}" width="14" height="${Math.max(y(lo)-y(hi),2)}" fill="var(--ok)" opacity=".35"/><polyline fill="none" stroke="var(--acc)" stroke-width="2" points="${pts}"/></svg>`}
+const views={
+async Today(){const d=await api("/api/today");$("#demoTag").style.display=d.demo?"inline-block":"none";
+ $("#sloth").setAttribute("class",d.awake?"awake":"sleep");const s=d.summary;
+ if(!s)return `<div class=card><div class=big>No runs yet</div><div class=mut>Run <code>slothwatch run &lt;csv&gt;</code> or <code>slothwatch-demo run clean-month</code>.</div></div>`;
+ const al=await api("/api/alerts");const pend=al.filter(a=>a.status=="pending");
+ return `<div class=card><div class="big ${s.quiet?"ok":"bad"}">${s.quiet?"Nothing needs you.":s.pings+" need you."}</div><div class=mut>${esc(s.message.split("\n")[0])}</div></div>
+ ${pend.length?`<div class=card><b>Waiting on your decision</b>${pend.map(alertRow).join("")}</div>`:""}`},
+async Ladder(){const d=await api("/api/ladder"),c=d.latest;if(!c)return"<div class=card>No runs yet.</div>";
+ const rows=[["rows checked",c.rows],["settled by rules (rung 0)",c.rung0],["settled by forecast (rung 1)",c.rung1],["hushed by learning (1.5)",c.suppressed],["Gemma woke (rung 2)",c.gemma],["you were pinged (rung 3)",c.pings]];
+ return `<div class=card><b>Latest run funnel</b> <span class=mut>(${c.start} → ${c.end})</span>${rows.map(([l,v])=>`<div class=row><div class=l>${l}</div><div class=bar style="width:${Math.max(v/Math.max(c.rows,1)*70,v?.8:0)}%"></div><b>${v}</b></div>`).join("")}</div>
+ <div class=card><div class=mut>Last 30 days</div><div class=big>${d.totals.asleep_pct.toFixed(1)}%</div><div class=mut>of rows never woke the model (naive baseline: 0%)</div></div>`},
+async Recurring(){const r=await api("/api/recurring");if(!r.length)return"<div class=card>No recurring items learned yet.</div>";
+ const tot=r.filter(x=>x.cadence=="monthly").reduce((a,x)=>a+x.expected,0);
+ return `<div class=card><div class=mut>Forecast next-cycle total (monthly items)</div><div class=big>${money(tot)}</div></div>`+
+ `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:12px">${r.map(x=>`<div class=card><b>${esc(x.merchant)}</b> <span class=pill>${x.cadence}</span><div class=mut>expect ${money(x.expected)} · range ${money(x.lo)}–${money(x.hi)} · ${esc(x.method)}</div>${band(x.series,x.lo,x.hi)}</div>`).join("")}</div>`},
+async Alerts(){const a=await api("/api/alerts");return `<div class=card>${a.length?a.map(alertRow).join(""):"<span class=mut>No alerts. That is the point.</span>"}</div>`},
+async Score(){const d=await api("/api/score"),h=d.history;return `<div class=card><div class=mut>Gemma wake-ups per run</div>${line(h.map(x=>x.gemma),560,140,"var(--bad)")}<div class=mut>rows per run</div>${line(h.map(x=>x.rows))}</div>
+ <div class=card><table><tr><th>run</th><th>window</th><th>rows</th><th>rules</th><th>forecast</th><th>hushed</th><th>Gemma</th><th>pings</th></tr>${h.slice(-30).reverse().map(x=>`<tr><td>${x.run_id}</td><td>${x.start}→${x.end}</td><td>${x.rows}</td><td>${x.rung0}</td><td>${x.rung1}</td><td>${x.suppressed}</td><td>${x.gemma}</td><td>${x.pings}</td></tr>`).join("")}</table></div>`},
+async Receipts(){const d=await api("/api/receipts"),s=await api("/api/sample"),v=d.verify,cn=d.canary[0];
+ return `<div class=card><b>Chain</b> <span class="${v.ok?"ok":"bad"}">${v.ok?"verified":"BROKEN"}</span> <span class=mut>${v.checked} receipts · head ${v.head.slice(0,16)}…</span>${v.errors.map(e=>`<div class=bad>${esc(e)}</div>`).join("")}</div>
+ <div class=card><b>Is the sloth actually awake?</b> ${cn?`<span class="${cn.caught==1?"ok":"bad"}">${cn.caught==1?"canary caught":"canary MISSED"}</span> <span class=mut>${esc(cn.detail)} · ${cn.ts}</span>`:"<span class=mut>no canary run yet (<code>slothwatch canary &lt;csv&gt;</code>)</span>"}</div>
+ <div class=card><b>Spot-check: 3 rows it left alone</b><table>${s.map(x=>`<tr><td>${x.date}</td><td>${esc(x.merchant)}</td><td>${money(x.amount)}</td><td class=mut>rung ${x.rung}: ${esc(x.reason)}${x.lo!=null?` · interval ${money(x.lo)}–${money(x.hi)}`:""}</td></tr>`).join("")}</table></div>
+ <div class=card><table><tr><th>#</th><th>date</th><th>rows</th><th>surprises</th><th>hash</th></tr>${d.receipts.map(r=>`<tr><td>${r.id}</td><td>${r.date}</td><td>${r.rows}</td><td>${r.surprises}</td><td class=mut>${r.hash}</td></tr>`).join("")}</table></div>`},
+async Benchmark(){const b=await api("/api/benchmark");if(!b.length)return"<div class=card>Run <code>slothwatch bench</code> to fill this in.</div>";
+ const tw=b.reduce((a,x)=>a+x.ladder_gemma_wakeups,0),tb=b.reduce((a,x)=>a+x.baseline_llm_calls,0);
+ return `<div class=card><div class=mut>Sloth Score across scenarios</div><div class=big>${tb-tw} / ${tb}</div><div class=mut>rows that never woke the model · mode: ${esc(b[0].mode)}</div></div>
+ <div class=card><table><tr><th>scenario</th><th>ladder wake-ups</th><th>baseline calls</th><th>tokens (ladder/baseline)</th><th>recall</th><th>precision</th></tr>${b.map(x=>`<tr><td>${x.scenario}</td><td>${x.ladder_gemma_wakeups}</td><td>${x.baseline_llm_calls}</td><td>${x.ladder_tokens}/${x.baseline_tokens}</td><td>${x.recall??"n/a"}</td><td>${x.precision??"n/a"}</td></tr>`).join("")}</table></div>`},
+async Settings(){const s=await api("/api/settings");return `<div class=card><table>${Object.entries(s).map(([k,v])=>`<tr><td class=mut>${k}</td><td>${esc(JSON.stringify(v))}</td></tr>`).join("")}</table></div>
+ <div class=card><b>Ignore a merchant</b><div class=mut>Adds it to the ignore-list for future runs.</div><input id=ig placeholder="e.g. BEANBAR" style="padding:6px;border-radius:7px;border:1px solid var(--line);background:var(--card);color:var(--fg)"> <button class="act p" onclick="ignoreM()">Add</button></div>`}};
+function alertRow(a){const sev={act:"bad",watch:"warn",ignore:"mut"}[a.severity];const pend=a.status=="pending";
+ return `<div style="padding:10px 0;border-bottom:1px solid var(--line)"><span class="pill ${sev}">${a.severity}</span> <b>${esc(a.merchant)}</b> <span class=mut>${a.date} · ${money(a.amount)} · ${a.kind} · ${a.status}</span>
+ <div>${esc(a.verdict)}</div><div class=mut>${esc(a.action)}</div>${pend?`<div style="margin-top:6px"><button class="act p" onclick="dec(${a.id},'approve')">Approve draft</button><button class=act onclick="dec(${a.id},'ignore')">Ignore</button><button class=act onclick="dec(${a.id},'snooze')">Snooze 7d</button></div>`:""}
+ ${pend&&a.draft?`<details><summary class=mut>draft message (never sent automatically)</summary><div class=mut>${esc(a.draft)}</div></details>`:""}</div>`}
+async function dec(id,d){const r=await post("/api/decide",{id,decision:d});if(r.draft_path)alert("Draft saved to "+r.draft_path+"\nSlothWatch never sends anything. Copy it where you need it.");go(cur)}
+async function ignoreM(){const v=$("#ig").value;if(v){await post("/api/ignore-merchant",{merchant:v});go("Settings")}}
+go("Today");
+</script></body></html>

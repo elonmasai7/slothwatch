@@ -1,14 +1,10 @@
-# 90-second demo script
-
-Use the generated fictional data only. Start with `make benchmark` once so the dashboard has the scenario comparison, then use `make demo` or open the dashboard in another terminal. A 90-second sequence:
-
-| Time | Shot | Action / caption | Expected proof |
+# 90-second demo shot list
+| t | shot | command / action | say |
 |---|---|---|---|
-| 0–12 s | Today | Run `slothwatch-demo run --scenario clean-month`. Caption: “No surprises; nothing needs you.” | Exact quiet receipt line: `Nothing needs you. Go back to sleep. (276 rows checked, 0 surprises. Receipt #...)` (receipt number increments across local runs). |
-| 12–28 s | Scenario injection | Run `slothwatch-demo run --scenario everything-wrong`. Caption: “Synthetic anomalies, no personal data.” | A doubled subscription, duplicate charge, electricity spike and creeping insurance rise are labelled as planted anomalies in demo output. |
-| 28–48 s | Ladder | Open the Ladder tab and point from Rung 0 to forecast to learning to the explainer. | Per-run rung counts, Gemma/template wake-ups and human pings. Default mode explicitly says local template fallback; only select `--use-ollama` when a local model is running. |
-| 48–65 s | Review queue | Show an `act` alert and its draft. Click Ignore or Snooze; use Approve only to demonstrate outbox copy. | Only an explicit human decision changes the status. Approved text is written to `.slothwatch/outbox/approved-<id>.txt`; nothing is sent. |
-| 65–78 s | Receipts | Open Receipts, click verify, show the receipt hash. Run `slothwatch verify` in terminal. | Database chain and daily JSON mirrors validate. `slothwatch canary` gives the planted synthetic canary a visible catch result. |
-| 78–90 s | Benchmark / score | Show the benchmark comparison and Sloth Score. | Report compares the ladder with a controlled all-row-explainer baseline. Tokens are explicitly estimated in template mode, not claimed as Gemma measurements. |
-
-For a time-compressed diary run, use `slothwatch-demo run --scenario everything-wrong --fast --seconds 60`; it prints one line per simulated day. The tour command is `slothwatch-demo tour`. Exact timings vary by machine; this is a shot list, not an assertion of measured video duration.
+| 0:00 | terminal, mascot asleep in dashboard | `slothwatch-demo run clean-month` | "Most nights, my agent does nothing. This is the whole product." |
+| 0:12 | receipt | `slothwatch receipt --sample 3` | "Silence with a receipt: 3 rows it left alone, with the interval that cleared them." |
+| 0:25 | inject | `slothwatch-demo run everything-wrong` | "Now: a streaming price hike, a double charge, an electricity spike, a creeping premium." |
+| 0:40 | ladder funnel | (printed funnel) | "47 rows. Rules settled 42. Gemma woke 4 times. A naive agent: 47." |
+| 0:52 | dashboard | `slothwatch-demo serve` -> Alerts, approve | "It drafts the dispute. It never sends it." Mascot opens its eyes. |
+| 1:08 | fast diary | `slothwatch-demo fast duplicate-charge --pace 0.3` | "Day 1: nothing. Day 2: nothing… Day 15: the double charge." |
+| 1:20 | proof | dashboard Benchmark + Receipts (chain verified) | "Everything on this page stayed on my machine." |

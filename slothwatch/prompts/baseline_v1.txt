@@ -1,0 +1,3 @@
+Is this transaction suspicious? Answer with ONLY JSON: {{"suspicious": true|false, "reason": "one sentence"}}
+Transaction: {merchant} on {date} for {amount}.
+Recent amounts from this merchant: {recent}.

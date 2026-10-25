@@ -1,0 +1,33 @@
+from typing import Optional
+
+from typing_extensions import Literal
+
+from .._compat import PYDANTIC_V2, ConfigDict
+from .._models import StrictBase
+from .model_id import ModelID
+
+__all__ = ["SaveWeightsRequest"]
+
+
+class SaveWeightsRequest(StrictBase):
+    model_id: ModelID
+
+    path: Optional[str] = None
+    """A file/directory name for the weights"""
+
+    seq_id: Optional[int] = None
+
+    ttl_seconds: Optional[int] = None
+    """TTL in seconds for this checkpoint, 1 hour (3600) to 10 years (None = never expires)"""
+
+    overwrite: bool = False
+    """If True, overwrite any existing checkpoint with the same name"""
+
+    user_metadata: Optional[dict[str, str]] = None
+    """Optional user-provided metadata to attach to the checkpoint"""
+
+    type: Literal["save_weights"] = "save_weights"
+
+    if PYDANTIC_V2:
+        # allow fields with a `model_` prefix
+        model_config = ConfigDict(protected_namespaces=tuple())

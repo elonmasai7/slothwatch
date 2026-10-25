@@ -1,0 +1,2 @@
+[console_scripts]
+tinker = tinker.cli.__main__:cli

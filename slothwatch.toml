@@ -1,0 +1,10 @@
+# Copy and edit. Every key is optional. Env overrides: SLOTHWATCH_<KEY>, e.g. SLOTHWATCH_OLLAMA_MODEL=gemma3:12b
+currency = "$"
+ollama_model = "gemma3:4b"
+# ignore_merchants = ["BEANBAR"]      # rung 0: never escalate
+# allow_merchants  = ["RENT SUNRISE"] # rung 0: trusted
+# dayfirst = true                     # for 25/03/2026-style bank exports
+# [columns]                           # only if auto-detect fails
+# date = "Txn Date"
+# description = "Narrative"
+# amount = "Value"

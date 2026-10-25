@@ -1,14 +1,4 @@
-__pycache__/
-*.py[cod]
-.pytest_cache/
-.ruff_cache/
-.venv/
-.env
 .slothwatch/
-data/real/*
-!data/real/.gitkeep
-benchmarks/results/*.tmp
+.slothwatch-demo/
+__pycache__/
 *.egg-info/
-build/
-dist/
-benchmarks/results/tuning_data/

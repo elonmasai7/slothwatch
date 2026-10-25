@@ -1,47 +1,26 @@
 [build-system]
-requires = ["setuptools==80.9.0", "wheel==0.45.1"]
+requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "slothwatch"
 version = "0.3.0"
-description = "A local-first personal-finance anomaly watcher that rewards silence."
-readme = "README.md"
+description = "A local agent whose best output is silence."
 requires-python = ">=3.11"
-license = {file = "LICENSE"}
-authors = [{name = "SlothWatch contributors"}]
-dependencies = [
-  "PyYAML==6.0.3",
-  "fastapi==0.128.2",
-  "uvicorn==0.48.0",
-]
+dependencies = []          # core runs on the standard library alone
 
 [project.optional-dependencies]
-test = ["pytest==9.0.2", "httpx==0.28.1"]
-temporal = ["temporalio>=1.33.0,<2.0"]
-sentry = ["sentry-sdk>=2.31,<3.0"]
-tabpfn = ["tabpfn>=9.2.0,<10.0"]
-tinker = ["tinker>=0.24.0,<1.0"]
-integrations = ["temporalio>=1.33.0,<2.0", "sentry-sdk>=2.31,<3.0", "tabpfn>=9.2.0,<10.0", "tinker>=0.24.0,<1.0"]
-all = ["pytest==9.0.2", "httpx==0.28.1", "temporalio>=1.33.0,<2.0", "sentry-sdk>=2.31,<3.0", "tabpfn>=9.2.0,<10.0", "tinker>=0.24.0,<1.0"]
+tabpfn   = ["tabpfn", "numpy"]   # Rung 1 / 1.5 (accept the license at platform.priorlabs.ai)
+temporal = ["temporalio"]        # durable nightly workflow
+sentry   = ["sentry-sdk"]        # optional agent tracing
+dev      = []
 
 [project.scripts]
 slothwatch = "slothwatch.cli:main"
-slothwatch-demo = "slothwatch.demo_cli:main"
-
-[tool.setuptools]
-package-dir = {"" = "core"}
+slothwatch-demo = "slothwatch.demo.cli:main"
 
 [tool.setuptools.packages.find]
-where = ["core"]
-
-[tool.pytest.ini_options]
-testpaths = ["tests"]
-addopts = "-ra"
-
-[tool.ruff]
-line-length = 100
-target-version = "py311"
+include = ["slothwatch*"]
 
 [tool.setuptools.package-data]
-slothwatch = ["static/*.html", "prompts/*.txt"]
+slothwatch = ["prompts/*.txt", "dashboard.html"]

@@ -1,380 +1,164 @@
-{
-  "generated_at": "2026-10-25 07:20:08",
-  "mode": "local deterministic synthetic run",
-  "use_ollama": false,
-  "method_note": "The ladder and all-row baseline were run on synthetic rows only. In template mode, token counts are whitespace estimates and neither side called Gemma. With --use-ollama and a configured loopback model, the ladder calls Ollama only for surprises and the baseline attempts a call for every row; token telemetry depends on the Ollama response.",
-  "summary": {
-    "ladder_explainer_wakeups": 8,
-    "naive_explainer_wakeups": 1658,
-    "ladder_gemma_wakeups": 8,
-    "naive_wakeups": 1658,
-    "wakeups_reduced_pct": 99.52,
-    "scenarios": 6
-  },
-  "scenarios": [
-    {
-      "scenario": "clean-month",
-      "ladder": {
-        "wakeups": 0,
-        "human_pings": 0,
-        "rows_checked": 276,
-        "settled_r0": 260,
-        "settled_r1": 16,
-        "settled_r1_5": 0,
-        "tokens_in_estimate": 0,
-        "tokens_out_estimate": 0,
-        "wall_seconds": 0.048211,
-        "estimated_closed_api_cost_usd": 0.0,
-        "true_anomalies": 0,
-        "detected_true_anomalies": 0,
-        "false_positives": 0,
-        "missed_true_anomalies": 0,
-        "precision": 1.0,
-        "recall": 1.0,
-        "predicted_alerts": 0,
-        "explainer_mode": "deterministic local template; Ollama/Gemma not invoked"
-      },
-      "naive_baseline": {
-        "wakeups": 276,
-        "successful_model_calls": 0,
-        "mode": "controlled all-row explainer ablation; template-mode costs and latency are not model measurements",
-        "tokens_in_estimate": 8768,
-        "tokens_out_estimate": 12420,
-        "wall_seconds": 0.000131,
-        "estimated_closed_api_cost_usd": 0.0087672,
-        "precision": 1.0,
-        "recall": 1.0,
-        "labeling": "same detector outputs; all rows passed to explainer (controlled ablation)",
-        "token_method": "whitespace-based token estimate; no LLM service was called"
-      }
-    },
-    {
-      "scenario": "double-subscription",
-      "ladder": {
-        "wakeups": 1,
-        "human_pings": 0,
-        "rows_checked": 276,
-        "settled_r0": 259,
-        "settled_r1": 16,
-        "settled_r1_5": 0,
-        "tokens_in_estimate": 31,
-        "tokens_out_estimate": 45,
-        "wall_seconds": 0.048691,
-        "estimated_closed_api_cost_usd": 3.165e-05,
-        "true_anomalies": 1,
-        "detected_true_anomalies": 1,
-        "false_positives": 0,
-        "missed_true_anomalies": 0,
-        "precision": 1.0,
-        "recall": 1.0,
-        "predicted_alerts": 1,
-        "explainer_mode": "deterministic local template; Ollama/Gemma not invoked"
-      },
-      "naive_baseline": {
-        "wakeups": 276,
-        "successful_model_calls": 0,
-        "mode": "controlled all-row explainer ablation; template-mode costs and latency are not model measurements",
-        "tokens_in_estimate": 8768,
-        "tokens_out_estimate": 12420,
-        "wall_seconds": 0.000151,
-        "estimated_closed_api_cost_usd": 0.0087672,
-        "precision": 1.0,
-        "recall": 1.0,
-        "labeling": "same detector outputs; all rows passed to explainer (controlled ablation)",
-        "token_method": "whitespace-based token estimate; no LLM service was called"
-      }
-    },
-    {
-      "scenario": "duplicate-charge",
-      "ladder": {
-        "wakeups": 1,
-        "human_pings": 1,
-        "rows_checked": 277,
-        "settled_r0": 260,
-        "settled_r1": 16,
-        "settled_r1_5": 0,
-        "tokens_in_estimate": 31,
-        "tokens_out_estimate": 45,
-        "wall_seconds": 0.046407,
-        "estimated_closed_api_cost_usd": 3.165e-05,
-        "true_anomalies": 1,
-        "detected_true_anomalies": 1,
-        "false_positives": 0,
-        "missed_true_anomalies": 0,
-        "precision": 1.0,
-        "recall": 1.0,
-        "predicted_alerts": 1,
-        "explainer_mode": "deterministic local template; Ollama/Gemma not invoked"
-      },
-      "naive_baseline": {
-        "wakeups": 277,
-        "successful_model_calls": 0,
-        "mode": "controlled all-row explainer ablation; template-mode costs and latency are not model measurements",
-        "tokens_in_estimate": 8799,
-        "tokens_out_estimate": 12465,
-        "wall_seconds": 0.000133,
-        "estimated_closed_api_cost_usd": 0.00879885,
-        "precision": 1.0,
-        "recall": 1.0,
-        "labeling": "same detector outputs; all rows passed to explainer (controlled ablation)",
-        "token_method": "whitespace-based token estimate; no LLM service was called"
-      }
-    },
-    {
-      "scenario": "electricity-spike",
-      "ladder": {
-        "wakeups": 1,
-        "human_pings": 1,
-        "rows_checked": 276,
-        "settled_r0": 260,
-        "settled_r1": 15,
-        "settled_r1_5": 0,
-        "tokens_in_estimate": 32,
-        "tokens_out_estimate": 45,
-        "wall_seconds": 0.064609,
-        "estimated_closed_api_cost_usd": 3.18e-05,
-        "true_anomalies": 1,
-        "detected_true_anomalies": 1,
-        "false_positives": 0,
-        "missed_true_anomalies": 0,
-        "precision": 1.0,
-        "recall": 1.0,
-        "predicted_alerts": 1,
-        "explainer_mode": "deterministic local template; Ollama/Gemma not invoked"
-      },
-      "naive_baseline": {
-        "wakeups": 276,
-        "successful_model_calls": 0,
-        "mode": "controlled all-row explainer ablation; template-mode costs and latency are not model measurements",
-        "tokens_in_estimate": 8768,
-        "tokens_out_estimate": 12420,
-        "wall_seconds": 0.000142,
-        "estimated_closed_api_cost_usd": 0.0087672,
-        "precision": 1.0,
-        "recall": 1.0,
-        "labeling": "same detector outputs; all rows passed to explainer (controlled ablation)",
-        "token_method": "whitespace-based token estimate; no LLM service was called"
-      }
-    },
-    {
-      "scenario": "creeping-increase",
-      "ladder": {
-        "wakeups": 1,
-        "human_pings": 0,
-        "rows_checked": 276,
-        "settled_r0": 249,
-        "settled_r1": 26,
-        "settled_r1_5": 0,
-        "tokens_in_estimate": 32,
-        "tokens_out_estimate": 45,
-        "wall_seconds": 0.057963,
-        "estimated_closed_api_cost_usd": 3.18e-05,
-        "true_anomalies": 1,
-        "detected_true_anomalies": 1,
-        "false_positives": 0,
-        "missed_true_anomalies": 0,
-        "precision": 1.0,
-        "recall": 1.0,
-        "predicted_alerts": 1,
-        "explainer_mode": "deterministic local template; Ollama/Gemma not invoked"
-      },
-      "naive_baseline": {
-        "wakeups": 276,
-        "successful_model_calls": 0,
-        "mode": "controlled all-row explainer ablation; template-mode costs and latency are not model measurements",
-        "tokens_in_estimate": 8768,
-        "tokens_out_estimate": 12420,
-        "wall_seconds": 0.000132,
-        "estimated_closed_api_cost_usd": 0.0087672,
-        "precision": 1.0,
-        "recall": 1.0,
-        "labeling": "same detector outputs; all rows passed to explainer (controlled ablation)",
-        "token_method": "whitespace-based token estimate; no LLM service was called"
-      }
-    },
-    {
-      "scenario": "everything-wrong",
-      "ladder": {
-        "wakeups": 4,
-        "human_pings": 2,
-        "rows_checked": 277,
-        "settled_r0": 248,
-        "settled_r1": 25,
-        "settled_r1_5": 0,
-        "tokens_in_estimate": 126,
-        "tokens_out_estimate": 180,
-        "wall_seconds": 0.102121,
-        "estimated_closed_api_cost_usd": 0.0001269,
-        "true_anomalies": 4,
-        "detected_true_anomalies": 4,
-        "false_positives": 0,
-        "missed_true_anomalies": 0,
-        "precision": 1.0,
-        "recall": 1.0,
-        "predicted_alerts": 4,
-        "explainer_mode": "deterministic local template; Ollama/Gemma not invoked"
-      },
-      "naive_baseline": {
-        "wakeups": 277,
-        "successful_model_calls": 0,
-        "mode": "controlled all-row explainer ablation; template-mode costs and latency are not model measurements",
-        "tokens_in_estimate": 8799,
-        "tokens_out_estimate": 12465,
-        "wall_seconds": 0.000141,
-        "estimated_closed_api_cost_usd": 0.00879885,
-        "precision": 1.0,
-        "recall": 1.0,
-        "labeling": "same detector outputs; all rows passed to explainer (controlled ablation)",
-        "token_method": "whitespace-based token estimate; no LLM service was called"
-      }
-    }
-  ],
-  "learning": {
-    "off": {
-      "weeks": [
-        {
-          "week": 1,
-          "gemma_wakeups": 1,
-          "human_pings": 0
-        },
-        {
-          "week": 2,
-          "gemma_wakeups": 1,
-          "human_pings": 0
-        },
-        {
-          "week": 3,
-          "gemma_wakeups": 2,
-          "human_pings": 1
-        },
-        {
-          "week": 4,
-          "gemma_wakeups": 1,
-          "human_pings": 0
-        },
-        {
-          "week": 5,
-          "gemma_wakeups": 1,
-          "human_pings": 0
-        },
-        {
-          "week": 6,
-          "gemma_wakeups": 2,
-          "human_pings": 1
-        },
-        {
-          "week": 7,
-          "gemma_wakeups": 1,
-          "human_pings": 0
-        },
-        {
-          "week": 8,
-          "gemma_wakeups": 1,
-          "human_pings": 0
-        },
-        {
-          "week": 9,
-          "gemma_wakeups": 2,
-          "human_pings": 1
-        },
-        {
-          "week": 10,
-          "gemma_wakeups": 1,
-          "human_pings": 0
-        },
-        {
-          "week": 11,
-          "gemma_wakeups": 1,
-          "human_pings": 0
-        },
-        {
-          "week": 12,
-          "gemma_wakeups": 2,
-          "human_pings": 1
-        }
-      ],
-      "learning_on": false,
-      "gemma_wakeups": 16,
-      "human_pings": 4,
-      "true_anomalies": 4,
-      "detected_true_anomalies": 4,
-      "recall": 1.0,
-      "precision": 0.25,
-      "simulated_persona": "ignores small utility fluctuations; approves clear duplicates",
-      "seed": 2401
-    },
-    "on": {
-      "weeks": [
-        {
-          "week": 1,
-          "gemma_wakeups": 0,
-          "human_pings": 0
-        },
-        {
-          "week": 2,
-          "gemma_wakeups": 0,
-          "human_pings": 0
-        },
-        {
-          "week": 3,
-          "gemma_wakeups": 1,
-          "human_pings": 1
-        },
-        {
-          "week": 4,
-          "gemma_wakeups": 0,
-          "human_pings": 0
-        },
-        {
-          "week": 5,
-          "gemma_wakeups": 0,
-          "human_pings": 0
-        },
-        {
-          "week": 6,
-          "gemma_wakeups": 1,
-          "human_pings": 1
-        },
-        {
-          "week": 7,
-          "gemma_wakeups": 0,
-          "human_pings": 0
-        },
-        {
-          "week": 8,
-          "gemma_wakeups": 0,
-          "human_pings": 0
-        },
-        {
-          "week": 9,
-          "gemma_wakeups": 1,
-          "human_pings": 1
-        },
-        {
-          "week": 10,
-          "gemma_wakeups": 0,
-          "human_pings": 0
-        },
-        {
-          "week": 11,
-          "gemma_wakeups": 0,
-          "human_pings": 0
-        },
-        {
-          "week": 12,
-          "gemma_wakeups": 1,
-          "human_pings": 1
-        }
-      ],
-      "learning_on": true,
-      "gemma_wakeups": 4,
-      "human_pings": 4,
-      "true_anomalies": 4,
-      "detected_true_anomalies": 4,
-      "recall": 1.0,
-      "precision": 1.0,
-      "simulated_persona": "ignores small utility fluctuations; approves clear duplicates",
-      "seed": 2401
-    }
+[
+ {
+  "scenario": "clean-month",
+  "mode": "offline-template (token counts estimated)",
+  "rows": 45,
+  "rung0": 43,
+  "rung1": 2,
+  "surprises": 0,
+  "ladder_gemma_wakeups": 0,
+  "baseline_llm_calls": 45,
+  "ladder_tokens": 0,
+  "baseline_tokens": 4021,
+  "ladder_wall_s": 0.03,
+  "baseline_wall_s": null,
+  "est_cost_if_billed_ladder_usd": 0.0,
+  "est_cost_if_billed_baseline_usd": 0.00336,
+  "planted": 0,
+  "caught": 0,
+  "false_positive_rows": 0,
+  "recall": null,
+  "precision": null,
+  "baseline_flagged_planted": null,
+  "baseline_false_positives": null,
+  "sloth_score": 45,
+  "methods": {
+   "robust_mad": 2
   }
-}
+ },
+ {
+  "scenario": "double-subscription",
+  "mode": "offline-template (token counts estimated)",
+  "rows": 45,
+  "rung0": 42,
+  "rung1": 2,
+  "surprises": 1,
+  "ladder_gemma_wakeups": 1,
+  "baseline_llm_calls": 45,
+  "ladder_tokens": 328,
+  "baseline_tokens": 4021,
+  "ladder_wall_s": 0.043,
+  "baseline_wall_s": null,
+  "est_cost_if_billed_ladder_usd": 0.00026,
+  "est_cost_if_billed_baseline_usd": 0.00336,
+  "planted": 1,
+  "caught": 1,
+  "false_positive_rows": 0,
+  "recall": 1.0,
+  "precision": 1.0,
+  "baseline_flagged_planted": null,
+  "baseline_false_positives": null,
+  "sloth_score": 44,
+  "methods": {
+   "robust_mad": 3
+  }
+ },
+ {
+  "scenario": "duplicate-charge",
+  "mode": "offline-template (token counts estimated)",
+  "rows": 47,
+  "rung0": 44,
+  "rung1": 2,
+  "surprises": 1,
+  "ladder_gemma_wakeups": 1,
+  "baseline_llm_calls": 47,
+  "ladder_tokens": 319,
+  "baseline_tokens": 4196,
+  "ladder_wall_s": 0.043,
+  "baseline_wall_s": null,
+  "est_cost_if_billed_ladder_usd": 0.00025,
+  "est_cost_if_billed_baseline_usd": 0.00351,
+  "planted": 1,
+  "caught": 1,
+  "false_positive_rows": 0,
+  "recall": 1.0,
+  "precision": 1.0,
+  "baseline_flagged_planted": null,
+  "baseline_false_positives": null,
+  "sloth_score": 46,
+  "methods": {
+   "robust_mad": 2
+  }
+ },
+ {
+  "scenario": "electricity-spike",
+  "mode": "offline-template (token counts estimated)",
+  "rows": 45,
+  "rung0": 43,
+  "rung1": 1,
+  "surprises": 1,
+  "ladder_gemma_wakeups": 1,
+  "baseline_llm_calls": 45,
+  "ladder_tokens": 338,
+  "baseline_tokens": 4021,
+  "ladder_wall_s": 0.046,
+  "baseline_wall_s": null,
+  "est_cost_if_billed_ladder_usd": 0.00027,
+  "est_cost_if_billed_baseline_usd": 0.00336,
+  "planted": 1,
+  "caught": 1,
+  "false_positive_rows": 0,
+  "recall": 1.0,
+  "precision": 1.0,
+  "baseline_flagged_planted": null,
+  "baseline_false_positives": null,
+  "sloth_score": 44,
+  "methods": {
+   "robust_mad": 2
+  }
+ },
+ {
+  "scenario": "creeping-increase",
+  "mode": "offline-template (token counts estimated)",
+  "rows": 45,
+  "rung0": 42,
+  "rung1": 2,
+  "surprises": 1,
+  "ladder_gemma_wakeups": 1,
+  "baseline_llm_calls": 45,
+  "ladder_tokens": 353,
+  "baseline_tokens": 4021,
+  "ladder_wall_s": 0.048,
+  "baseline_wall_s": null,
+  "est_cost_if_billed_ladder_usd": 0.00029,
+  "est_cost_if_billed_baseline_usd": 0.00336,
+  "planted": 1,
+  "caught": 1,
+  "false_positive_rows": 0,
+  "recall": 1.0,
+  "precision": 1.0,
+  "baseline_flagged_planted": null,
+  "baseline_false_positives": null,
+  "sloth_score": 44,
+  "methods": {
+   "robust_mad": 3
+  }
+ },
+ {
+  "scenario": "everything-wrong",
+  "mode": "offline-template (token counts estimated)",
+  "rows": 47,
+  "rung0": 42,
+  "rung1": 1,
+  "surprises": 4,
+  "ladder_gemma_wakeups": 4,
+  "baseline_llm_calls": 47,
+  "ladder_tokens": 1338,
+  "baseline_tokens": 4196,
+  "ladder_wall_s": 0.042,
+  "baseline_wall_s": null,
+  "est_cost_if_billed_ladder_usd": 0.00107,
+  "est_cost_if_billed_baseline_usd": 0.00351,
+  "planted": 4,
+  "caught": 4,
+  "false_positive_rows": 0,
+  "recall": 1.0,
+  "precision": 1.0,
+  "baseline_flagged_planted": null,
+  "baseline_false_positives": null,
+  "sloth_score": 43,
+  "methods": {
+   "robust_mad": 4
+  }
+ }
+]

@@ -1,0 +1,238 @@
+{
+ "on": {
+  "learning": true,
+  "weeks": [
+   {
+    "week": 1,
+    "wakeups": 3,
+    "pings": 1,
+    "suppressed": 0,
+    "alerts": 2,
+    "true_anomalies": 1,
+    "caught": 1
+   },
+   {
+    "week": 2,
+    "wakeups": 9,
+    "pings": 3,
+    "suppressed": 0,
+    "alerts": 5,
+    "true_anomalies": 3,
+    "caught": 3
+   },
+   {
+    "week": 3,
+    "wakeups": 4,
+    "pings": 2,
+    "suppressed": 0,
+    "alerts": 2,
+    "true_anomalies": 1,
+    "caught": 1
+   },
+   {
+    "week": 4,
+    "wakeups": 3,
+    "pings": 1,
+    "suppressed": 0,
+    "alerts": 1,
+    "true_anomalies": 1,
+    "caught": 1
+   },
+   {
+    "week": 5,
+    "wakeups": 4,
+    "pings": 2,
+    "suppressed": 0,
+    "alerts": 4,
+    "true_anomalies": 3,
+    "caught": 3
+   },
+   {
+    "week": 6,
+    "wakeups": 6,
+    "pings": 4,
+    "suppressed": 0,
+    "alerts": 4,
+    "true_anomalies": 3,
+    "caught": 3
+   },
+   {
+    "week": 7,
+    "wakeups": 4,
+    "pings": 2,
+    "suppressed": 3,
+    "alerts": 2,
+    "true_anomalies": 2,
+    "caught": 2
+   },
+   {
+    "week": 8,
+    "wakeups": 2,
+    "pings": 1,
+    "suppressed": 2,
+    "alerts": 1,
+    "true_anomalies": 1,
+    "caught": 1
+   },
+   {
+    "week": 9,
+    "wakeups": 2,
+    "pings": 1,
+    "suppressed": 1,
+    "alerts": 1,
+    "true_anomalies": 1,
+    "caught": 1
+   },
+   {
+    "week": 10,
+    "wakeups": 3,
+    "pings": 1,
+    "suppressed": 0,
+    "alerts": 1,
+    "true_anomalies": 1,
+    "caught": 1
+   },
+   {
+    "week": 11,
+    "wakeups": 5,
+    "pings": 2,
+    "suppressed": 2,
+    "alerts": 3,
+    "true_anomalies": 2,
+    "caught": 2
+   },
+   {
+    "week": 12,
+    "wakeups": 2,
+    "pings": 1,
+    "suppressed": 1,
+    "alerts": 1,
+    "true_anomalies": 0,
+    "caught": 0
+   }
+  ],
+  "total_wakeups": 47,
+  "total_pings": 21,
+  "true_total": 19,
+  "true_caught": 19,
+  "missed": []
+ },
+ "off": {
+  "learning": false,
+  "weeks": [
+   {
+    "week": 1,
+    "wakeups": 3,
+    "pings": 1,
+    "suppressed": 0,
+    "alerts": 2,
+    "true_anomalies": 1,
+    "caught": 1
+   },
+   {
+    "week": 2,
+    "wakeups": 9,
+    "pings": 3,
+    "suppressed": 0,
+    "alerts": 5,
+    "true_anomalies": 3,
+    "caught": 3
+   },
+   {
+    "week": 3,
+    "wakeups": 4,
+    "pings": 2,
+    "suppressed": 0,
+    "alerts": 2,
+    "true_anomalies": 1,
+    "caught": 1
+   },
+   {
+    "week": 4,
+    "wakeups": 3,
+    "pings": 1,
+    "suppressed": 0,
+    "alerts": 1,
+    "true_anomalies": 1,
+    "caught": 1
+   },
+   {
+    "week": 5,
+    "wakeups": 4,
+    "pings": 2,
+    "suppressed": 0,
+    "alerts": 4,
+    "true_anomalies": 3,
+    "caught": 3
+   },
+   {
+    "week": 6,
+    "wakeups": 6,
+    "pings": 4,
+    "suppressed": 0,
+    "alerts": 4,
+    "true_anomalies": 3,
+    "caught": 3
+   },
+   {
+    "week": 7,
+    "wakeups": 7,
+    "pings": 5,
+    "suppressed": 0,
+    "alerts": 5,
+    "true_anomalies": 2,
+    "caught": 2
+   },
+   {
+    "week": 8,
+    "wakeups": 4,
+    "pings": 3,
+    "suppressed": 0,
+    "alerts": 3,
+    "true_anomalies": 1,
+    "caught": 1
+   },
+   {
+    "week": 9,
+    "wakeups": 3,
+    "pings": 1,
+    "suppressed": 0,
+    "alerts": 2,
+    "true_anomalies": 1,
+    "caught": 1
+   },
+   {
+    "week": 10,
+    "wakeups": 3,
+    "pings": 1,
+    "suppressed": 0,
+    "alerts": 1,
+    "true_anomalies": 1,
+    "caught": 1
+   },
+   {
+    "week": 11,
+    "wakeups": 7,
+    "pings": 4,
+    "suppressed": 0,
+    "alerts": 5,
+    "true_anomalies": 2,
+    "caught": 2
+   },
+   {
+    "week": 12,
+    "wakeups": 3,
+    "pings": 2,
+    "suppressed": 0,
+    "alerts": 2,
+    "true_anomalies": 0,
+    "caught": 0
+   }
+  ],
+  "total_wakeups": 56,
+  "total_pings": 29,
+  "true_total": 19,
+  "true_caught": 19,
+  "missed": []
+ }
+}

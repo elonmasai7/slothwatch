@@ -7,6 +7,40 @@ Two apps, one core:
 - **SlothWatch (real)**: your CSVs, your schedule. State in `.slothwatch/`.
 - **SlothWatch Demo**: seeded synthetic life, six scenario packs, fast-forward sloth diary, guided tour, 12-week simulation. State in `.slothwatch-demo/`.
 
+## Screenshots
+
+All captured from real runs of this repo (synthetic demo data). Regenerate any of them with the command shown.
+
+**1. A clean month: silence is the product** (`slothwatch-demo run clean-month`)
+
+![A clean month](docs/screenshots/01-silence.png)
+
+**2. Everything goes wrong: the ladder wakes the model only 4 times out of 47 rows** (`slothwatch-demo run everything-wrong`)
+
+![The ladder in action](docs/screenshots/02-ladder.png)
+
+**3. A sloth's diary: 30 days, one line per day** (`slothwatch-demo fast duplicate-charge`)
+
+![Sloth diary](docs/screenshots/03-diary.png)
+
+**4. Silence with a receipt: spot-check three ignored rows and verify the hash chain** (`slothwatch receipt --sample 3`, `slothwatch verify`)
+
+![Silence receipt](docs/screenshots/04-receipt.png)
+
+**5. Proof it stays local: pipeline runs with all external network blocked; 28 tests pass** (`slothwatch privacy-check`, `make test`)
+
+![Privacy check and tests](docs/screenshots/05-privacy-tests.png)
+
+**6. Benchmark: model wake-ups per scenario, ladder vs send-every-row** (`slothwatch bench`)
+
+![Benchmark](docs/screenshots/06-benchmark-chart.png)
+
+**7. The Laziness Curve: wake-ups per week with learning on vs off** (`slothwatch-demo sim`)
+
+![Laziness curve](docs/screenshots/07-laziness-curve.png)
+
+> Dashboard screenshots: run `make demo` and open `http://127.0.0.1:8766/#Today`, `#Alerts`, `#Receipts` (tabs deep-link by hash), then save images to `docs/screenshots/`.
+
 ## The Sloth Ladder
 Rung 0 rules → Rung 1 TabPFN interval → Rung 1.5 "does this person care?" (learns from your decisions) → Rung 2 Gemma (local) →
 Rung 3 you (approve / ignore / snooze; nothing is ever sent). Each rung exists to avoid waking the next. Every run, quiet or not,

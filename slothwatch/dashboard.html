@@ -78,5 +78,5 @@ function alertRow(a){const sev={act:"bad",watch:"warn",ignore:"mut"}[a.severity]
  ${pend&&a.draft?`<details><summary class=mut>draft message (never sent automatically)</summary><div class=mut>${esc(a.draft)}</div></details>`:""}</div>`}
 async function dec(id,d){const r=await post("/api/decide",{id,decision:d});if(r.draft_path)alert("Draft saved to "+r.draft_path+"\nSlothWatch never sends anything. Copy it where you need it.");go(cur)}
 async function ignoreM(){const v=$("#ig").value;if(v){await post("/api/ignore-merchant",{merchant:v});go("Settings")}}
-go("Today");
+go(tabs.includes(location.hash.slice(1))?location.hash.slice(1):"Today");
 </script></body></html>

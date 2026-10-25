@@ -111,7 +111,8 @@ class Engine:
         lines = [f"{c['human_pings']} thing{'s' if c['human_pings'] != 1 else ''} need{'s' if c['human_pings'] == 1 else ''} you ({tail}):"]
         for s in out["alerts"]:
             if s["explanation"].severity == "act":
-                lines.append(f" - [{s['merchant']}] {s['explanation'].verdict}")
+                v = s["explanation"].verdict
+                lines.append(f" - {v}" if s["merchant"].split()[0].lower() in v.lower() else f" - [{s['merchant']}] {v}")
         return "\n".join(lines)
 
     def _refresh_profiles(self, con, rows, profiles, end: date):

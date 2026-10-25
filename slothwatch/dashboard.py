@@ -1,6 +1,8 @@
 """Local dashboard: stdlib http.server + one static page. No build step, no CDNs, works offline."""
 from __future__ import annotations
 import json, threading, webbrowser
+from email import policy
+from email.parser import BytesParser
 from datetime import date
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
@@ -72,9 +74,46 @@ def make_handler(cfg: Config, demo: bool):
                 con.close()
 
         def do_POST(self):
+            path = urlparse(self.path).path
+            if path == "/api/import":
+                if demo:
+                    return self._send({"error": "File import is disabled in the public synthetic demo. Use the local dashboard for private statements."}, 403)
+                try:
+                    size = int(self.headers.get("Content-Length", "0"))
+                    if size <= 0 or size > 10 * 1024 * 1024:
+                        raise ValueError("Choose a file smaller than 10 MB.")
+                    content_type = self.headers.get("Content-Type", "")
+                    if not content_type.lower().startswith("multipart/form-data;"):
+                        raise ValueError("Choose a CSV or PDF file to import.")
+                    message = BytesParser(policy=policy.default).parsebytes(
+                        b"Content-Type: " + content_type.encode("ascii", "strict") + b"\r\nMIME-Version: 1.0\r\n\r\n" + self.rfile.read(size))
+                    upload = next((part for part in message.iter_parts()
+                                   if part.get_content_disposition() == "form-data" and part.get_filename()), None)
+                    if upload is None:
+                        raise ValueError("Choose a CSV or PDF file to import.")
+                    filename = Path(upload.get_filename()).name
+                    data = upload.get_payload(decode=True) or b""
+                    if not data:
+                        raise ValueError("That file is empty.")
+                    from .ingest import read_csv_text, read_pdf
+                    if filename.lower().endswith(".csv"):
+                        rows, info = read_csv_text(data.decode("utf-8-sig", errors="replace"), cfg)
+                    elif filename.lower().endswith(".pdf"):
+                        rows, info = read_pdf(data, cfg)
+                    else:
+                        raise ValueError("Choose a .csv or .pdf file.")
+                    if not rows:
+                        raise ValueError("No spending transactions were found in that file.")
+                    result = eng.run_real(rows)
+                    return self._send({"ok": True, "filename": filename, "rows": len(rows), "details": info,
+                                       "message": result.get("message", "Import complete."),
+                                       "summary": result}, 200)
+                except (ValueError, UnicodeError) as exc:
+                    return self._send({"error": str(exc)}, 400)
+                except Exception:
+                    return self._send({"error": "Import failed. Check the file format and try again."}, 400)
             n = int(self.headers.get("Content-Length", 0))
             data = json.loads(self.rfile.read(n) or b"{}")
-            path = urlparse(self.path).path
             if path == "/api/decide" and data.get("decision") in ("approve", "ignore", "snooze"):
                 return self._send(eng.decide(int(data["id"]), data["decision"]))
             if path == "/api/ignore-merchant" and data.get("merchant"):

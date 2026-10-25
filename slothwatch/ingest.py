@@ -78,7 +78,11 @@ def _find(header: list[str], want: str, override: dict) -> str | None:
 
 
 def read_csv(path: str | Path, cfg: Config) -> tuple[list[Tx], dict]:
-    raw = Path(path).read_text(encoding="utf-8-sig", errors="replace")
+    return read_csv_text(Path(path).read_text(encoding="utf-8-sig", errors="replace"), cfg)
+
+
+def read_csv_text(raw: str, cfg: Config) -> tuple[list[Tx], dict]:
+    """Parse CSV contents already in memory, such as a dashboard upload."""
     try:
         dialect = csv.Sniffer().sniff(raw[:4096], delimiters=",;\t|")
     except csv.Error:
@@ -119,6 +123,47 @@ def read_csv(path: str | Path, cfg: Config) -> tuple[list[Tx], dict]:
         key = hashlib.sha1(f"{d}|{desc}|{spend:.2f}|{occ[k]}".encode()).hexdigest()[:10]
         out.append(Tx(d, desc, round(spend, 2), (r.get(c["account"]) or "") if c["account"] else "", key))
     return out, {"skipped_credits": skipped, "rows": len(out), "date_format": fmt, "sign": sign}
+
+
+def read_pdf(data: bytes, cfg: Config) -> tuple[list[Tx], dict]:
+    """Extract simple statement rows from a text PDF; scanned/image PDFs need OCR/export to CSV."""
+    try:
+        from pypdf import PdfReader
+    except ImportError as exc:
+        raise ValueError("PDF support needs pypdf. Install with `pip install -e '.[pdf]'`.") from exc
+    import io
+
+    try:
+        text = "\n".join(page.extract_text() or "" for page in PdfReader(io.BytesIO(data)).pages)
+    except Exception as exc:
+        raise ValueError("Could not read this PDF. Try exporting the statement as CSV.") from exc
+    date_re = re.compile(r"^(\d{4}-\d{1,2}-\d{1,2}|\d{1,2}[/-]\d{1,2}[/-]\d{2,4}|\d{1,2}\s+[A-Za-z]{3,9}\s+\d{4})\s+(.+?)\s+([\(\-]?\s*(?:[A-Z]{3}\s*)?[$€£]?\d[\d,.]*\)?-?)\s*$")
+    out, occurrence = [], {}
+    for line in text.splitlines():
+        m = date_re.match(" ".join(line.split()))
+        if not m:
+            continue
+        raw_date, desc, raw_amount = m.groups()
+        parsed_date = None
+        for fmt in _formats(cfg.dayfirst):
+            try:
+                parsed_date = datetime.strptime(raw_date, fmt).date()
+                break
+            except ValueError:
+                continue
+        amount = parse_amount(raw_amount)
+        if parsed_date is None or amount is None or amount <= 0 or not desc.strip():
+            continue
+        identity = (parsed_date, desc.strip(), round(amount, 2))
+        occurrence[identity] = occurrence.get(identity, 0) + 1
+        key = hashlib.sha1(f"{identity}|{occurrence[identity]}|pdf".encode()).hexdigest()[:10]
+        out.append(Tx(parsed_date, desc.strip(), round(amount, 2), key=key))
+    if not out:
+        raise ValueError("No readable transaction rows found. This PDF may be scanned or use a different layout; export it as CSV.")
+    out.sort(key=lambda tx: (tx.date, tx.desc, tx.amount))
+    for i, tx in enumerate(out):
+        tx.seq = i
+    return out, {"rows": len(out), "format": "text PDF"}
 
 
 def load_path(path: str | Path, cfg: Config) -> list[Tx]:

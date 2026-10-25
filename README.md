@@ -66,6 +66,8 @@ python3 -m slothwatch watch ~/Downloads/bank-exports/ # re-run when files change
 ```
 (`pip install -e .` also gives you the `slothwatch` and `slothwatch-demo` commands.)
 
+The local dashboard's **Import** tab accepts CSV statements directly. For text-based PDF statements, install optional PDF support with `pip install -e '.[pdf]'`; scanned PDFs need OCR or a CSV export. Uploads are processed by the local dashboard and saved in its local SlothWatch history. Import is disabled on the public synthetic demo.
+
 ## Deploy the synthetic demo to Render
 
 The Render Blueprint in `render.yaml` deploys only the synthetic demo dashboard. It seeds a clean-month scenario on each start and binds to Render's public port. Do not point it at real bank CSVs or use the hosted dashboard for private financial data. In Render, create a new Blueprint from this GitHub repository and apply the `slothwatch-demo` web service.

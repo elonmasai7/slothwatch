@@ -20,6 +20,7 @@ button.act.p{background:var(--acc);color:#fff;border-color:var(--acc)}
 .eyes .lid{transition:all .4s}.sleep .pupil{opacity:0}.awake .lid{opacity:0}
 code{background:var(--line);padding:1px 5px;border-radius:4px}svg text{fill:var(--mut);font-size:11px}
 .pill{display:inline-block;padding:1px 8px;border-radius:99px;font-size:12px;border:1px solid var(--line)}
+.upload{border:2px dashed var(--line);border-radius:12px;padding:26px;text-align:center}.upload input{display:block;margin:14px auto;max-width:100%}.upload button{margin-top:8px}
 </style></head><body>
 <header>
  <svg id="sloth" width="64" height="48" viewBox="0 0 64 48" class="sleep" aria-label="sloth mascot">
@@ -29,11 +30,11 @@ code{background:var(--line);padding:1px 5px;border-radius:4px}svg text{fill:var(
    <path class="lid" d="M17 25 Q23 28 29 25 M35 25 Q41 28 47 25" stroke="#d9c7a3" stroke-width="4" fill="none"/></g>
   <ellipse cx="32" cy="32" rx="3" ry="2" fill="#3b2e22"/><path d="M28 35 Q32 38 36 35" stroke="#3b2e22" fill="none" stroke-width="1.5"/>
  </svg>
- <div><h1>SlothWatch <span id="demoTag" class="pill" style="display:none">DEMO · synthetic data</span></h1><div class="tag">The best output is silence. Everything on this page stays on your machine.</div></div>
+ <div><h1>SlothWatch <span id="demoTag" class="pill" style="display:none">DEMO · synthetic data</span></h1><div class="tag" id="privacyLine">The best output is silence.</div></div>
 </header>
 <nav id="nav"></nav><main id="main"></main>
 <script>
-const tabs=["Today","Ladder","Recurring","Alerts","Score","Receipts","Benchmark","Settings"];let cur="Today";
+const tabs=["Today","Import","Ladder","Recurring","Alerts","Score","Receipts","Benchmark","Settings"];let cur="Today";
 const $=s=>document.querySelector(s),api=p=>fetch(p).then(r=>r.json()),post=(p,b)=>fetch(p,{method:"POST",body:JSON.stringify(b)}).then(r=>r.json());
 const esc=s=>String(s??"").replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
 const money=x=>x==null?"–":Number(x).toFixed(2);
@@ -45,11 +46,14 @@ function band(s,lo,hi,w=300,h=70){const all=[...s,lo,hi],mx=Math.max(...all),mn=
  const pts=s.map((v,i)=>`${10+i*sx},${y(v)}`).join(" ");return `<svg viewBox="0 0 ${w} ${h}" width="100%"><rect x="${10+s.length*sx-6}" y="${y(hi)}" width="14" height="${Math.max(y(lo)-y(hi),2)}" fill="var(--ok)" opacity=".35"/><polyline fill="none" stroke="var(--acc)" stroke-width="2" points="${pts}"/></svg>`}
 const views={
 async Today(){const d=await api("/api/today");$("#demoTag").style.display=d.demo?"inline-block":"none";
+ $("#privacyLine").textContent=d.demo?"Public synthetic demo. Uploads are disabled; use the local dashboard for private statements.":"Your statements are processed by this local dashboard and saved in its local SlothWatch data folder.";
  $("#sloth").setAttribute("class",d.awake?"awake":"sleep");const s=d.summary;
  if(!s)return `<div class=card><div class=big>No runs yet</div><div class=mut>Run <code>slothwatch run &lt;csv&gt;</code> or <code>slothwatch-demo run clean-month</code>.</div></div>`;
  const al=await api("/api/alerts");const pend=al.filter(a=>a.status=="pending");
  return `<div class=card><div class="big ${s.quiet?"ok":"bad"}">${s.quiet?"Nothing needs you.":s.pings+" need you."}</div><div class=mut>${esc(s.message.split("\n")[0])}</div></div>
  ${pend.length?`<div class=card><b>Waiting on your decision</b>${pend.map(alertRow).join("")}</div>`:""}`},
+async Import(){const d=await api("/api/today");if(d.demo)return `<div class=card><div class=big>Statement import is off in the public demo</div><p class=mut>This site is public and meant for synthetic data. For private bank statements, run <code>slothwatch dashboard</code> on your computer and use its Import tab.</p></div>`;
+ return `<div class=card><h2 style="margin-top:0">Sort out a statement</h2><p class=mut>Choose a CSV or text based PDF. The file is handled by this local dashboard and is not sent to a hosted service. Transactions are added to your local SlothWatch history.</p><div class=upload><form id=importForm onsubmit="importFile(event)"><label for=statement><b>Choose a statement</b><br><span class=mut>CSV or PDF · up to 10 MB</span></label><input id=statement name=file type=file accept=".csv,.pdf,text/csv,application/pdf" required><button class="act p" type=submit>Import and analyze</button></form></div><p class=mut>CSV files use automatic column matching. PDFs must contain selectable text and transaction rows with a date, description, and amount; scanned PDFs need OCR first.</p><div id=importResult role=status aria-live=polite></div></div>`},
 async Ladder(){const d=await api("/api/ladder"),c=d.latest;if(!c)return"<div class=card>No runs yet.</div>";
  const rows=[["rows checked",c.rows],["settled by rules (rung 0)",c.rung0],["settled by forecast (rung 1)",c.rung1],["hushed by learning (1.5)",c.suppressed],["Gemma woke (rung 2)",c.gemma],["you were pinged (rung 3)",c.pings]];
  return `<div class=card><b>Latest run funnel</b> <span class=mut>(${c.start} → ${c.end})</span>${rows.map(([l,v])=>`<div class=row><div class=l>${l}</div><div class=bar style="width:${Math.max(v/Math.max(c.rows,1)*70,v?.8:0)}%"></div><b>${v}</b></div>`).join("")}</div>
@@ -77,6 +81,7 @@ function alertRow(a){const sev={act:"bad",watch:"warn",ignore:"mut"}[a.severity]
  <div>${esc(a.verdict)}</div><div class=mut>${esc(a.action)}</div>${pend?`<div style="margin-top:6px"><button class="act p" onclick="dec(${a.id},'approve')">Approve draft</button><button class=act onclick="dec(${a.id},'ignore')">Ignore</button><button class=act onclick="dec(${a.id},'snooze')">Snooze 7d</button></div>`:""}
  ${pend&&a.draft?`<details><summary class=mut>draft message (never sent automatically)</summary><div class=mut>${esc(a.draft)}</div></details>`:""}</div>`}
 async function dec(id,d){const r=await post("/api/decide",{id,decision:d});if(r.draft_path)alert("Draft saved to "+r.draft_path+"\nSlothWatch never sends anything. Copy it where you need it.");go(cur)}
+async function importFile(e){e.preventDefault();const f=$("#statement").files[0],box=$("#importResult");if(!f)return;box.innerHTML="<span class=mut>Reading and sorting transactions…</span>";const body=new FormData();body.append("file",f);try{const r=await fetch("/api/import",{method:"POST",body}),d=await r.json();if(!r.ok)throw new Error(d.error||"Import failed.");const c=d.summary.counts||{};box.innerHTML=`<div class=card><b class=ok>Import complete</b><div>${esc(d.filename)} · ${d.rows} transactions · ${c.surprises_total||0} items flagged</div><div class=mut>${esc(d.message)}</div></div>`}catch(err){box.innerHTML=`<div class=bad>${esc(err.message)}</div>`}}
 async function ignoreM(){const v=$("#ig").value;if(v){await post("/api/ignore-merchant",{merchant:v});go("Settings")}}
 go(tabs.includes(location.hash.slice(1))?location.hash.slice(1):"Today");
 </script></body></html>

@@ -1,6 +1,7 @@
 """Local dashboard: stdlib http.server + one static page. No build step, no CDNs, works offline."""
 from __future__ import annotations
 import json, threading, webbrowser
+import tempfile
 from email import policy
 from email.parser import BytesParser
 from datetime import date
@@ -76,8 +77,6 @@ def make_handler(cfg: Config, demo: bool):
         def do_POST(self):
             path = urlparse(self.path).path
             if path == "/api/import":
-                if demo:
-                    return self._send({"error": "File import is disabled in the public synthetic demo. Use the local dashboard for private statements."}, 403)
                 try:
                     size = int(self.headers.get("Content-Length", "0"))
                     if size <= 0 or size > 10 * 1024 * 1024:
@@ -104,7 +103,14 @@ def make_handler(cfg: Config, demo: bool):
                         raise ValueError("Choose a .csv or .pdf file.")
                     if not rows:
                         raise ValueError("No spending transactions were found in that file.")
-                    result = eng.run_real(rows)
+                    if demo:
+                        # Keep each public demo upload separate and discard its state after analysis.
+                        from dataclasses import replace
+                        with tempfile.TemporaryDirectory(prefix="slothwatch-demo-upload-") as scratch:
+                            upload_cfg = replace(cfg, data_dir=scratch, desktop_notify=False, sentry_dsn="")
+                            result = Engine(upload_cfg).run_real(rows)
+                    else:
+                        result = eng.run_real(rows)
                     return self._send({"ok": True, "filename": filename, "rows": len(rows), "details": info,
                                        "message": result.get("message", "Import complete."),
                                        "summary": result}, 200)

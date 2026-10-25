@@ -66,7 +66,7 @@ python3 -m slothwatch watch ~/Downloads/bank-exports/ # re-run when files change
 ```
 (`pip install -e .` also gives you the `slothwatch` and `slothwatch-demo` commands.)
 
-The local dashboard's **Import** tab accepts CSV statements directly. For text-based PDF statements, install optional PDF support with `pip install -e '.[pdf]'`; scanned PDFs need OCR or a CSV export. Uploads are processed by the local dashboard and saved in its local SlothWatch history. Import is disabled on the public synthetic demo.
+The dashboard's **Import** tab accepts CSV statements directly. For text-based PDF statements, install optional PDF support with `pip install -e '.[pdf]'`; scanned PDFs need OCR or a CSV export. Local dashboard uploads are saved in local SlothWatch history. The public demo processes uploads in a separate temporary workspace and discards the processing data after each request. Use synthetic or redacted samples there; never upload real account details.
 
 ## Deploy the synthetic demo to Render
 

@@ -1,0 +1,9 @@
+# Optional CSV header overrides. Values must exactly match CSV header names.
+# Uncomment and edit for bank exports that cannot be auto-detected.
+# date: Transaction Date
+# description: Narrative
+# amount: Amount (USD)
+# debit: Debit
+# credit: Credit
+# account: Account Name
+# category: Category

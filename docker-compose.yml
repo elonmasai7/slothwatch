@@ -1,0 +1,14 @@
+# Official Temporal development-server image/command pattern.
+# This is a local development service, not a production deployment.
+services:
+  temporal:
+    image: temporalio/temporal:latest
+    command: server start-dev --ip 0.0.0.0 --db-filename /home/temporal/temporal.db
+    ports:
+      - "127.0.0.1:7233:7233"
+      - "127.0.0.1:8233:8233"
+    volumes:
+      - temporal-data:/home/temporal
+
+volumes:
+  temporal-data:

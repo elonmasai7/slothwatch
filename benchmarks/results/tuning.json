@@ -1,0 +1,27 @@
+{
+  "dataset": {
+    "count": 1200,
+    "train_count": 1020,
+    "holdout_count": 180,
+    "seed": 7341,
+    "synthetic_only": true
+  },
+  "baseline": {
+    "status": "measured deterministic rule/template baseline (not a model call)",
+    "examples": 180,
+    "json_valid_rate": 1.0,
+    "severity_accuracy": 1.0,
+    "verdict_clarity_score": 1.0,
+    "average_latency_ms": 0.019005188888362074,
+    "tokens": "13586 whitespace-estimated total",
+    "cost_usd": 0.0,
+    "limitation": "This is a local deterministic reference, not an LLM baseline. The structured rule-reason field is available to the baseline, so the perfect score measures consistency with synthetic labels, not independent anomaly reasoning. The optional Tinker model has not been run unless the report says it was trained and evaluated."
+  },
+  "tuned": {
+    "status": "not run; requires --train and TINKER_API_KEY"
+  },
+  "model_selection": {
+    "model": "Qwen/Qwen3.5-4B",
+    "reason": "Current Tinker supported-model table lists Qwen/Qwen3.5-4B and does not list a Gemma-family model. The runtime app remains local Gemma via Ollama; this is a separate opt-in training experiment."
+  }
+}

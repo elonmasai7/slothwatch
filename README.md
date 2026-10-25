@@ -66,6 +66,10 @@ python3 -m slothwatch watch ~/Downloads/bank-exports/ # re-run when files change
 ```
 (`pip install -e .` also gives you the `slothwatch` and `slothwatch-demo` commands.)
 
+## Deploy the synthetic demo to Render
+
+The Render Blueprint in `render.yaml` deploys only the synthetic demo dashboard. It seeds a clean-month scenario on each start and binds to Render's public port. Do not point it at real bank CSVs or use the hosted dashboard for private financial data. In Render, create a new Blueprint from this GitHub repository and apply the `slothwatch-demo` web service.
+
 ## Bring the open models
 ```bash
 ollama pull gemma3:4b                 # Rung 2 (else: labelled templated verdicts)

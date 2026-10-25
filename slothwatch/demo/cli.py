@@ -146,7 +146,8 @@ def cmd_gen(a):
 
 def cmd_serve(a):
     from ..dashboard import serve
-    serve(load_config(None, data_dir=DEMO_DIR, desktop_notify=False), a.port, open_browser=not a.no_open, demo=True)
+    serve(load_config(None, data_dir=DEMO_DIR, desktop_notify=False), a.port,
+          open_browser=not a.no_open, demo=True, host=getattr(a, "host", "127.0.0.1"))
 
 
 def cmd_all(a):
@@ -180,7 +181,7 @@ def main(argv=None):
     s = sub.add_parser("tour"); s.add_argument("--pace", type=float, default=3.0, help="seconds between steps; negative = wait for Enter"); s.set_defaults(f=cmd_tour)
     s = sub.add_parser("sim", help="Laziness Curve simulation"); s.add_argument("--weeks", type=int, default=12); s.set_defaults(f=cmd_sim)
     s = sub.add_parser("gen"); s.add_argument("scenario", choices=sc); s.add_argument("out"); s.set_defaults(f=cmd_gen)
-    s = sub.add_parser("serve"); s.add_argument("--port", type=int, default=8766); s.add_argument("--no-open", action="store_true"); s.set_defaults(f=cmd_serve)
+    s = sub.add_parser("serve"); s.add_argument("--port", type=int, default=8766); s.add_argument("--host", default="127.0.0.1"); s.add_argument("--no-open", action="store_true"); s.set_defaults(f=cmd_serve)
     s = sub.add_parser("all"); s.add_argument("--port", type=int, default=8766); s.add_argument("--no-open", action="store_true"); s.set_defaults(f=cmd_all)
     a = p.parse_args(argv)
     sys.exit(a.f(a) or 0)

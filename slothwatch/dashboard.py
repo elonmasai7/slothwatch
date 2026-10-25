@@ -88,10 +88,11 @@ def make_handler(cfg: Config, demo: bool):
     return H
 
 
-def serve(cfg: Config, port: int = 8765, open_browser: bool = True, demo: bool = False):
-    srv = ThreadingHTTPServer(("127.0.0.1", port), make_handler(cfg, demo))
+def serve(cfg: Config, port: int = 8765, open_browser: bool = True, demo: bool = False,
+          host: str = "127.0.0.1"):
+    srv = ThreadingHTTPServer((host, port), make_handler(cfg, demo))
     url = f"http://127.0.0.1:{port}/"
-    print(f"SlothWatch {'DEMO ' if demo else ''}dashboard at {url} (localhost only). Ctrl-C to stop.")
+    print(f"SlothWatch {'DEMO ' if demo else ''}dashboard listening on {host}:{port}. Ctrl-C to stop.")
     if open_browser:
         threading.Timer(0.5, lambda: webbrowser.open(url)).start()
     try:
